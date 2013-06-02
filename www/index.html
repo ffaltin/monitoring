@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<title>Monitoring</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			html, body {
+				height: 100%;
+			}
+			#geo-wrapper {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+    </head>
+	<body>
+		<script type="text/javascript" src="phonegap.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery-migrate.min.js"></script>
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/jquery.flot.min.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript">
+			app.initialize();
+		</script>
+		<div ng-controller="statCtrl" id="wrapper">
+			<h2>System details</h2>
+			<table class="system">
+				<thead>
+					<tr>
+						<th>Property</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Hostname:</td>
+						<td>{{msg.hostname}}</td>
+					</tr>
+					<tr>
+						<td>Type:</td>
+						<td>{{msg.type}}</td>
+					</tr>
+					<tr>
+						<td>Platform:</td>
+						<td>{{msg.platform}}</td>
+					</tr>
+					<tr>
+						<td>Arch:</td>
+						<td>{{msg.arch}}</td>
+					</tr>
+					<tr>
+						<td>Release:</td>
+						<td>{{msg.release}}</td>
+					</tr>
+					<tr>
+						<td>Uptime:</td>
+						<td>{{msg.uptime}}</td>
+					</tr>
+					<tr>
+						<td>Load avg.:</td>
+						<td>{{msg.loadaverage}}</td>
+					</tr>
+					<tr>
+						<td>Total mem:</td>
+						<td>{{msg.totalmem}}</td>
+					</tr>
+					<tr>
+						<td>Free mem:</td>
+						<td>{{msg.freemem}}</td>
+					</tr>
+				</tbody>
+			</table><!--
+			--><div class="graph">
+				<div id="myChart"></div>
+			</div>
+			<h1>Cpu</h1>
+			<table class="cpu" ng-repeat="cpu in msg.cpus">
+				<thead>
+					<tr>
+						<th>Property</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Model:</td>
+						<td>{{cpu.model}}</td>
+					</tr>
+					<tr>
+						<td>Speed:</td>
+						<td>{{cpu.speed}}</td>
+					</tr>
+					<tr>
+						<td>Times: user</td>
+						<td>{{cpu.times.user}}</td>
+					</tr>
+					<tr>
+						<td>Times: nice</td>
+						<td>{{cpu.times.nice}}</td>
+					</tr>
+					<tr>
+						<td>Times: sys</td>
+						<td>{{cpu.times.sys}}</td>
+					</tr>
+					<tr>
+						<td>Times: idle</td>
+						<td>{{cpu.times.idle}}</td>
+					</tr>
+					<tr>
+						<td>Times: irq</td>
+						<td>{{cpu.times.irq}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

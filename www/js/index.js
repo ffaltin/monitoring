@@ -50,11 +50,14 @@ function getRandomData() {
 
 // populate table
 function statCtrl($scope) {
-	$scope.msg = {};
+	// $scope.msg = {};
 	var handleCallback = function (msg) {
-		$scope.$apply(function () {
-			$scope.msg = JSON.parse(msg.data)
-		});
+		// $scope.$apply(function () {
+			// $scope.msg = JSON.parse(msg.data)
+		// });
+		
+		$('.test').append(JSON.stringify(msg.data));
+		
 	}
 	var source = new EventSource('http://server.monitor.k1.gunode.net/stats');
 	source.addEventListener('message', handleCallback, false);
@@ -69,7 +72,11 @@ var app = {
         document.addEventListener('DOMContentLoaded', this.deviceready, false);
     },
     deviceready: function() {
-		var app = angular.module('sse', []);
+		var handleCallback = function (msg) {
+			$('.test').append(JSON.parse(msg.data));
+		}
+		var source = new EventSource('http://server.monitor.k1.gunode.net/stats');
+		source.addEventListener('message', handleCallback, false);
 		Plot.obj = $.plot("#myChart", [ getRandomData() ], Plot.options);	
 		Plot.update();
     }

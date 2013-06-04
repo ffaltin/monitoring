@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="format-detection" content="telephone=no" />
@@ -21,7 +21,7 @@
 			}
 		</style>
     </head>
-	<body ng-app>
+	<body>
 		<script type="text/javascript" src="phonegap.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery-migrate.min.js"></script>
@@ -67,23 +67,22 @@
 					</tr>
 					<tr>
 						<td>Load avg.:</td>
-						<td class="loadaverage">{{msg.loadaverage}}</td>
+						<td>{{msg.loadaverage}}</td>
 					</tr>
 					<tr>
 						<td>Total mem:</td>
-						<td class="totalmem">{{msg.totalmem}}</td>
+						<td>{{msg.totalmem}}</td>
 					</tr>
 					<tr>
 						<td>Free mem:</td>
-						<td class="freemem">{{msg.freemem}}</td>
+						<td>{{msg.freemem}}</td>
 					</tr>
 				</tbody>
 			</table><!--
 			--><div class="graph">
 				<div id="myChart"></div>
 			</div>
-			<div class="test"></div>
-			<!--<h1>Cpu</h1>
+			<h1>Cpu</h1>
 			<table class="cpu" ng-repeat="cpu in msg.cpus">
 				<thead>
 					<tr>
@@ -121,7 +120,7 @@
 						<td>{{cpu.times.irq}}</td>
 					</tr>
 				</tbody>
-			</table>-->
+			</table>
 		</div>
 	</body>
 </html>

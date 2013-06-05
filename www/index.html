@@ -4,22 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="format-detection" content="telephone=no" />
 		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="themes/app/styles/all.css" />
 		<title>Monitoring</title>
-		<style>
-			* {
-				margin: 0;
-				padding: 0;
-				border: 0;
-			}
-			html, body {
-				height: 100%;
-			}
-			#geo-wrapper {
-				width: 100%;
-				height: 100%;
-			}
-		</style>
     </head>
 	<body>
 		<script type="text/javascript" src="phonegap.js"></script>
@@ -31,96 +17,249 @@
 		<script type="text/javascript">
 			app.initialize();
 		</script>
-		<div ng-controller="statCtrl" id="wrapper">
-			<h2>System details</h2>
-			<table class="system">
-				<thead>
-					<tr>
-						<th>Property</th>
-						<th>Value</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Hostname:</td>
-						<td>{{msg.hostname}}</td>
-					</tr>
-					<tr>
-						<td>Type:</td>
-						<td>{{msg.type}}</td>
-					</tr>
-					<tr>
-						<td>Platform:</td>
-						<td>{{msg.platform}}</td>
-					</tr>
-					<tr>
-						<td>Arch:</td>
-						<td>{{msg.arch}}</td>
-					</tr>
-					<tr>
-						<td>Release:</td>
-						<td>{{msg.release}}</td>
-					</tr>
-					<tr>
-						<td>Uptime:</td>
-						<td>{{msg.uptime}}</td>
-					</tr>
-					<tr>
-						<td>Load avg.:</td>
-						<td>{{msg.loadaverage}}</td>
-					</tr>
-					<tr>
-						<td>Total mem:</td>
-						<td>{{msg.totalmem}}</td>
-					</tr>
-					<tr>
-						<td>Free mem:</td>
-						<td>{{msg.freemem}}</td>
-					</tr>
-				</tbody>
-			</table><!--
-			--><div class="graph">
-				<div id="myChart"></div>
-			</div>
-			<h1>Cpu</h1>
-			<table class="cpu" ng-repeat="cpu in msg.cpus">
-				<thead>
-					<tr>
-						<th>Property</th>
-						<th>Value</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Model:</td>
-						<td>{{cpu.model}}</td>
-					</tr>
-					<tr>
-						<td>Speed:</td>
-						<td>{{cpu.speed}}</td>
-					</tr>
-					<tr>
-						<td>Times: user</td>
-						<td>{{cpu.times.user}}</td>
-					</tr>
-					<tr>
-						<td>Times: nice</td>
-						<td>{{cpu.times.nice}}</td>
-					</tr>
-					<tr>
-						<td>Times: sys</td>
-						<td>{{cpu.times.sys}}</td>
-					</tr>
-					<tr>
-						<td>Times: idle</td>
-						<td>{{cpu.times.idle}}</td>
-					</tr>
-					<tr>
-						<td>Times: irq</td>
-						<td>{{cpu.times.irq}}</td>
-					</tr>
-				</tbody>
-			</table>
+		<nav>
+			<ul>
+				<li class="server-list back" id="backtolist" style="display: none"><a href="#"><span class="icon-arrow-left-8"></span><span class="text">Servers' list</span></a></li>
+				<li class="logout"><a href="#"><span class="icon-out"></span><span class="text">Logout</span></a></li>
+			</ul>
+		</nav>
+		<div class="wrapper" ng-controller="serverListCtrl" id="manage-server">
+			<h2>Server list</h2>
+			<ul>
+				<li class="first">Nb of server: {{serverList.length}}</li>
+				<li ng-repeat="server in serverList" class="server-info {{server.klass}}">
+					<div class="action {{server.klass}}"><span class="icon-eye" data-toggle="tooltip" data-original-title="View"></span><span class="icon-square status"></span></div><!--
+					--><div class="info {{server.klass}}">
+						<label for="dns-item-{{$index}}">{{server.text}}</label>
+					</div>
+				</li>
+			</ul>
+			<form ng-submit="addDns()" style="display: none">
+				<p class="element text"><label>Server</label><input type="text" ng-model="serverText" placeholder="add new server here" /></p>
+				<p class="element input"><input class="btn-primary" type="submit" value="add"></p>
+			</form>
 		</div>
+		<div class="specific-server" id="k1" style="display: none">
+			<div ng-controller="DnsK1Ctrl" class="wrapper" id="manage-dns">	
+				<h1>k1.gunode.net</h1>
+				<h2>Dns list</h2>
+				<ul>
+					<li class="first">{{remaining()}} of {{dnsList.length}} remaining <span class="deleteall">[ <a href="" ng-click="deleteAll()">Delete selected item(s)</a> ]</span> <span class="icon-plus-2 add-new" ng-click="displayForm()" data-placement="top" data-toggle="tooltip" data-original-title="Add" style="float: right; border: none"></span></li>
+					<li ng-repeat="dns in dnsList">
+						<div class="action"><span class="icon-cancel-3 delete" ng-click="delete()" data-toggle="tooltip" data-original-title="Delete"></span> <span class="icon-eye" data-toggle="tooltip" data-original-title="View" ng-model="dns.details"></span> <input type="checkbox" ng-model="dns.done" id="dns-item-{{$index}}"/></div><!--
+						--><div class="info">
+							<label for="dns-item-{{$index}}" class="done-{{dns.done}}">{{dns.text}}</label>
+						</div>
+					</li>
+				</ul>
+				<form ng-submit="addDns()" style="display: none" class="form-k1">
+					<p class="element text"><label>Dns</label><input type="text" ng-model="dnsText" placeholder="add new dns here" /></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsWww" id="www" /><label for="www">www (system)</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsHttp" id="http" /><label for="http">http (nginx)</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsSsl" id="ssl" /><label for="ssl">ssl</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsMysql" id="mysql" /><label for="mysql">mysql</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsPostgres" id="postgres" /><label for="postgres">postgres</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsMongo" id="mongo" /><label for="mongo">mongo</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsRedis" id="redis" /><label for="redis">redis</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsFtp" id="ftp" /><label for="ftp">ftp</label></p>
+					<p class="checkbox element"><input type="checkbox" ng-model="dnsMail" id="mail" /><label for="mail">mail</label></p>
+					<p class="text element"><label for="pre-installation">Install: </label> <select name="">
+						<option>Nothing</option>
+						<option>Loana (latest)</option>
+						<option>Wordpress (latest)</option>
+						<option>Prestashop (latest)</option>
+						<option>Drupal (latest)</option>
+						<option>Symfony 2</option>
+						<option>Zend 2</option>
+						<option>Node</option>
+						<option>Django</option>
+					</select></p>
+					
+					<p class="element input"><input class="btn-primary" type="submit" value="add"></p>
+				</form>
+			</div>
+			
+			<div ng-controller="statCtrl" class="wrapper" id="statusserver">
+				<h2>System details</h2>
+				<table class="system">
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Cpu usage:</td>
+							<td>{{msg.cpu}}%</td>
+						</tr>
+						<tr>
+							<td>Memory usage:</td>
+							<td>{{msg.memory}}%</td>
+						</tr>
+						<tr>
+							<td>Platform:</td>
+							<td>Linux</td>
+						</tr>
+						<tr>
+							<td>Arch:</td>
+							<td>x64</td>
+						</tr>
+						<tr>
+							<td>Uptime:</td>
+							<td>{{msg.uptime}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</div>
+			<div class="specific-server" id="k0" style="display: none">
+				<div ng-controller="DnsK0Ctrl" class="wrapper" id="manage-dns">	
+					<h1>k0.gunode.net</h1>
+					<h2>Dns list</h2>
+					<ul>
+						<li class="first">{{remaining()}} of {{dnsList.length}} remaining <span class="deleteall">[ <a href="" ng-click="deleteAll()">Delete selected item(s)</a> ]</span> <span class="icon-plus-2 add-new" ng-click="displayForm()" data-placement="top" data-toggle="tooltip" data-original-title="Add" style="float: right; border: none"></span></li>
+						<li ng-repeat="dns in dnsList">
+							<div class="action"><span class="icon-cancel-3 delete" ng-click="delete()" data-toggle="tooltip" data-original-title="Delete"></span> <span class="icon-eye" data-toggle="tooltip" data-original-title="View" ng-model="dns.details"></span> <input type="checkbox" ng-model="dns.done" id="dns-item-{{$index}}"/></div><!--
+							--><div class="info">
+								<label for="dns-item-{{$index}}" class="done-{{dns.done}}">{{dns.text}}</label>
+							</div>
+						</li>
+					</ul>
+					<form ng-submit="addDns()" style="display: none"  class="form-k0">
+						<p class="element text"><label>Dns</label><input type="text" ng-model="dnsText" placeholder="add new dns here" /></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsWww" id="www" /><label for="www">www (system)</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsHttp" id="http" /><label for="http">http (nginx)</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsSsl" id="ssl" /><label for="ssl">ssl</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMysql" id="mysql" /><label for="mysql">mysql</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsPostgres" id="postgres" /><label for="postgres">postgres</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMongo" id="mongo" /><label for="mongo">mongo</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsRedis" id="redis" /><label for="redis">redis</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsFtp" id="ftp" /><label for="ftp">ftp</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMail" id="mail" /><label for="mail">mail</label></p>
+						<p class="text element"><label for="pre-installation">Install: </label> <select name="">
+							<option>Nothing</option>
+							<option>Loana (latest)</option>
+							<option>Wordpress (latest)</option>
+							<option>Prestashop (latest)</option>
+							<option>Drupal (latest)</option>
+							<option>Symfony 2</option>
+							<option>Zend 2</option>
+							<option>Node</option>
+							<option>Django</option>
+						</select></p>
+						
+						<p class="element input"><input class="btn-primary" type="submit" value="add"></p>
+					</form>
+				</div>
+				
+				<div ng-controller="statCtrl" class="wrapper" id="statusserver">
+					<h2>System details</h2>
+					<table class="system">
+						<thead>
+							<tr>
+								<th>Property</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Cpu usage:</td>
+								<td>{{msg.cpu}}%</td>
+							</tr>
+							<tr>
+								<td>Memory usage:</td>
+								<td>{{msg.memory}}%</td>
+							</tr>
+							<tr>
+								<td>Platform:</td>
+								<td>Linux</td>
+							</tr>
+							<tr>
+								<td>Arch:</td>
+								<td>x64</td>
+							</tr>
+							<tr>
+								<td>Uptime:</td>
+								<td>{{msg.uptime}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="specific-server" id="k2" style="display: none">
+				<div ng-controller="DnsK2Ctrl" class="wrapper" id="manage-dns">	
+					<h1>k2.gunode.net</h1>
+					<h2>Dns list</h2>
+					<ul>
+						<li class="first">{{remaining()}} of {{dnsList.length}} remaining <span class="deleteall">[ <a href="" ng-click="deleteAll()">Delete selected item(s)</a> ]</span> <span class="icon-plus-2 add-new" ng-click="displayForm()" data-placement="top" data-toggle="tooltip" data-original-title="Add" style="float: right; border: none"></span></li>
+						<li ng-repeat="dns in dnsList">
+							<div class="action"><span class="icon-cancel-3 delete" ng-click="delete()" data-toggle="tooltip" data-original-title="Delete"></span> <span class="icon-eye" data-toggle="tooltip" data-original-title="View" ng-model="dns.details"></span> <input type="checkbox" ng-model="dns.done" id="dns-item-{{$index}}"/></div><!--
+							--><div class="info">
+								<label for="dns-item-{{$index}}" class="done-{{dns.done}}">{{dns.text}}</label>
+							</div>
+						</li>
+					</ul>
+					<form ng-submit="addDns()" style="display: none" class="form-k2">
+						<p class="element text"><label>Dns</label><input type="text" ng-model="dnsText" placeholder="add new dns here" /></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsWww" id="www" /><label for="www">www (system)</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsHttp" id="http" /><label for="http">http (nginx)</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsSsl" id="ssl" /><label for="ssl">ssl</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMysql" id="mysql" /><label for="mysql">mysql</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsPostgres" id="postgres" /><label for="postgres">postgres</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMongo" id="mongo" /><label for="mongo">mongo</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsRedis" id="redis" /><label for="redis">redis</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsFtp" id="ftp" /><label for="ftp">ftp</label></p>
+						<p class="checkbox element"><input type="checkbox" ng-model="dnsMail" id="mail" /><label for="mail">mail</label></p>
+						<p class="text element"><label for="pre-installation">Install: </label> <select name="">
+							<option>Nothing</option>
+							<option>Loana (latest)</option>
+							<option>Wordpress (latest)</option>
+							<option>Prestashop (latest)</option>
+							<option>Drupal (latest)</option>
+							<option>Symfony 2</option>
+							<option>Zend 2</option>
+							<option>Node</option>
+							<option>Django</option>
+						</select></p>
+						
+						<p class="element input"><input class="btn-primary" type="submit" value="add"></p>
+					</form>
+				</div>
+				
+				<div ng-controller="statCtrl" class="wrapper" id="statusserver">
+					<h2>System details</h2>
+					<table class="system">
+						<thead>
+							<tr>
+								<th>Property</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Cpu usage:</td>
+								<td>{{msg.cpu}}%</td>
+							</tr>
+							<tr>
+								<td>Memory usage:</td>
+								<td>{{msg.memory}}%</td>
+							</tr>
+							<tr>
+								<td>Platform:</td>
+								<td>Linux</td>
+							</tr>
+							<tr>
+								<td>Arch:</td>
+								<td>x64</td>
+							</tr>
+							<tr>
+								<td>Uptime:</td>
+								<td>{{msg.uptime}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
 	</body>
 </html>

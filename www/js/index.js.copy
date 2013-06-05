@@ -1,0 +1,98 @@
+var Plot = {
+	options: {
+		series: {
+			color: "#72c4dd",
+			shadowSize: 0,
+			lines: {
+				fillColor: "rgba(114, 196, 220, 0.4)",
+				lineWidth: 0,
+				fill: true
+			}
+		},
+		yaxis: {
+			min: 0,
+			max: 100
+		},
+		xaxis: {
+			show: false
+		}
+	},
+	totalPoints: 300,
+	updateInterval: 1000,
+	data: [],
+	obj: null,
+	update: function() {
+		Plot.obj.setData([getRandomData()]);
+		Plot.obj.draw();
+		setTimeout(Plot.update, Plot.updateInterval);
+	}
+}
+// fake data
+function getRandomData() {
+	if (Plot.data.length > 0)
+		Plot.data = Plot.data.slice(1);
+	while (Plot.data.length < Plot.totalPoints) {
+		var prev = Plot.data.length > 0 ? Plot.data[Plot.data.length - 1] : 50,
+			y = prev + Math.random() * 10 - 5;
+		if (y < 0) {
+			y = 0;
+		} else if (y < 3) { 
+			y = 3;
+		} else if (y > 5) {
+			y = 5;
+		}
+		Plot.data.push(y);
+	}
+	var res = [];
+	for (var i = 0; i < Plot.data.length; ++i) {
+		res.push([i, Plot.data[i]])
+	}
+	return res;
+}
+
+function secondsToTime(s){
+	var d = Math.floor( s / (60*60*24));
+		s -= d * 60 *60 * 24;
+    var h  = Math.floor( s / ( 60 * 60 ) );
+        s -= h * ( 60 * 60 );
+    var m  = Math.floor( s / 60 );
+        s -= m * 60;
+   
+    return {
+		"d": d,
+        "h": h,
+        "m": m,
+        "s": Math.floor(s)
+    };
+}
+
+// populate table
+function statCtrl($scope) {
+	$scope.msg = {};
+	var handleCallback = function (msg) {
+		var message = JSON.parse(msg.data);
+		// message.uptime = msg.uptime;
+		var uptime = (secondsToTime(message.uptime));
+		$scope.$apply(function () {
+			$scope.msg = message;
+			$scope.msg.uptime = uptime;
+		});
+	}
+	var source = new EventSource('http://server.monitor.k1.gunode.net/stats');
+	source.addEventListener('message', handleCallback, false);
+}
+
+var app = {
+    initialize: function() {
+        this.bind();
+    },
+    bind: function() {
+        document.addEventListener('deviceready', this.deviceready, false);
+        document.addEventListener('DOMContentLoaded', this.deviceready, false);
+    },
+    deviceready: function() {
+		var app = angular.module('sse', []);
+		Plot.obj = $.plot("#myChart", [ getRandomData() ], Plot.options);	
+		Plot.update();
+    }
+};

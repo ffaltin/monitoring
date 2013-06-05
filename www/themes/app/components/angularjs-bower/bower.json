@@ -1,0 +1,21 @@
+{
+  "name": "angularjs-bower",
+  "version": "0.0.0",
+  "main": "angular.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "gitHead": "5baf5dd12749c5d9e1f0197aa8813f005ec34ebf",
+  "readme": "angularjs-bower\r\n===============\r\n\r\nbower angularjs package... will try to keep it up to date :)\r\n\r\nCurrent, or latest package holds angularjs v1.1.5.\r\n\r\nAngular bugs/issues should be reported to angularjs team.\r\n\r\n",
+  "readmeFilename": "README.md",
+  "_id": "angularjs-bower@1.1.5",
+  "description": "angularjs-bower\r ===============",
+  "commit": "5baf5dd12749c5d9e1f0197aa8813f005ec34ebf",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mjaric/angularjs-bower.git"
+  }
+}
